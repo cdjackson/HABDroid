@@ -47,6 +47,7 @@ import org.openhab.habdroid.model.OpenHABWidgetMapping;
 import org.openhab.habdroid.util.MyAsyncHttpClient;
 import org.openhab.habdroid.util.MySmartImageView;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -187,6 +188,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		widgetView = (RelativeLayout) convertView;
     	}
 
+    	// Process the colour attributes
+    	Integer iconColor = openHABWidget.getIconColor();
+    	Integer labelColor = openHABWidget.getLabelColor();
+    	Integer valueColor = openHABWidget.getValueColor();
+    	
         // Process widgets icon image
         MySmartImageView widgetImage = (MySmartImageView)widgetView.findViewById(R.id.widgetimage);
         // Some of widgets, for example Frame doesnt' have an icon, so...
@@ -198,6 +204,9 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
                 // Now set image URL
                 widgetImage.setImageUrl(iconUrl, R.drawable.blank_icon,
                         openHABUsername, openHABPassword);
+                
+                if(iconColor != null)
+                	widgetImage.setColorFilter(iconColor);
             }
         }
     	switch (getItemViewType(position)) {
@@ -205,6 +214,8 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		labelTextView = (TextView)widgetView.findViewById(R.id.framelabel);
     		if (labelTextView != null)
     			labelTextView.setText(openHABWidget.getLabel());
+    		if(labelColor != null)
+    			labelTextView.setTextColor(labelColor);
     		widgetView.setClickable(false);
     		if (openHABWidget.getLabel().length() > 0) { // hide empty frames
     			widgetView.setVisibility(View.VISIBLE);
@@ -220,8 +231,13 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		if (labelTextView != null && valueTextView != null) {
     			splitString = openHABWidget.getLabel().split("\\[|\\]");
     			labelTextView.setText(splitString[0]);
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+
     			if (splitString.length > 1) { // We have some value
     				valueTextView.setText(splitString[1]);
+            		if(valueColor != null)
+            			valueTextView.setTextColor(valueColor);
     			} else {
     				// This is needed to clean up cached TextViews
     				valueTextView.setText("");
@@ -232,10 +248,15 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		labelTextView = (TextView)widgetView.findViewById(R.id.sectionswitchlabel);
     		valueTextView = (TextView)widgetView.findViewById(R.id.sectionswitchvalue);
 			splitString = openHABWidget.getLabel().split("\\[|\\]");
-			if (labelTextView != null)
+			if (labelTextView != null) {
 				labelTextView.setText(splitString[0]);
+	    		if(labelColor != null)
+	    			labelTextView.setTextColor(labelColor);
+			}
 			if (splitString.length > 1 && valueTextView != null) { // We have some value
 				valueTextView.setText(splitString[1]);
+        		if(valueColor != null)
+        			valueTextView.setTextColor(valueColor);
 			} else {
 				// This is needed to clean up cached TextViews
 				valueTextView.setText("");
@@ -283,8 +304,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		break;
     	case TYPE_SWITCH:
     		labelTextView = (TextView)widgetView.findViewById(R.id.switchlabel);
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(openHABWidget.getLabel());
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		Switch switchSwitch = (Switch)widgetView.findViewById(R.id.switchswitch);
     		if (openHABWidget.hasItem()) {
     			if (openHABWidget.getItem().getState().equals("ON")) {
@@ -310,8 +334,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		break;
     	case TYPE_COLOR:
     		labelTextView = (TextView)widgetView.findViewById(R.id.colorlabel);
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(openHABWidget.getLabel());
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		ImageButton colorUpButton = (ImageButton)widgetView.findViewById(R.id.colorbutton_up);
     		ImageButton colorDownButton = (ImageButton)widgetView.findViewById(R.id.colorbutton_down);
     		ImageButton colorColorButton = (ImageButton)widgetView.findViewById(R.id.colorbutton_color);
@@ -360,8 +387,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		break;
     	case TYPE_ROLLERSHUTTER:
     		labelTextView = (TextView)widgetView.findViewById(R.id.rollershutterlabel);
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(openHABWidget.getLabel());
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		ImageButton rollershutterUpButton = (ImageButton)widgetView.findViewById(R.id.rollershutterbutton_up);
     		ImageButton rollershutterStopButton = (ImageButton)widgetView.findViewById(R.id.rollershutterbutton_stop);
     		ImageButton rollershutterDownButton = (ImageButton)widgetView.findViewById(R.id.rollershutterbutton_down);
@@ -399,29 +429,38 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     	case TYPE_TEXT:
     		labelTextView = (TextView)widgetView.findViewById(R.id.textlabel);
     		splitString = openHABWidget.getLabel().split("\\[|\\]");
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			if (splitString.length > 0) {
     				labelTextView.setText(splitString[0]);
     			} else {
     				labelTextView.setText(openHABWidget.getLabel());
     			}
+    			if(labelColor != null)
+    				labelTextView.setTextColor(labelColor);
+    		}
     		valueTextView = (TextView)widgetView.findViewById(R.id.textvalue);
-    		if (valueTextView != null) 
+    		if (valueTextView != null) {
     			if (splitString.length > 1) {
     				// If value is not empty, show TextView
     				valueTextView.setVisibility(View.VISIBLE);
     				valueTextView.setText(splitString[1]);
+            		if(valueColor != null)
+            			valueTextView.setTextColor(valueColor);
     			} else {
     				// If value is empty, hide TextView to fix vertical alignment of label
     				valueTextView.setVisibility(View.GONE);
     				valueTextView.setText("");
     			}
+    		}
     		break;
     	case TYPE_SLIDER:
     		labelTextView = (TextView)widgetView.findViewById(R.id.sliderlabel);
     		splitString = openHABWidget.getLabel().split("\\[|\\]");
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(splitString[0]);
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		SeekBar sliderSeekBar = (SeekBar)widgetView.findViewById(R.id.sliderseekbar);
     		if (openHABWidget.hasItem()) {
     			sliderSeekBar.setTag(openHABWidget.getItem());
@@ -535,8 +574,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     	case TYPE_SELECTION:
     		int spinnerSelectedIndex = -1;
     		labelTextView = (TextView)widgetView.findViewById(R.id.selectionlabel);
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(openHABWidget.getLabel());
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		Spinner selectionSpinner = (Spinner)widgetView.findViewById(R.id.selectionspinner);
     		ArrayList<String> spinnerArray = new ArrayList<String>();
     		Iterator<OpenHABWidgetMapping> mappingIterator = openHABWidget.getMappings().iterator();
@@ -589,8 +631,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     	case TYPE_SETPOINT:
     		labelTextView = (TextView)widgetView.findViewById(R.id.setpointlabel);
     		splitString = openHABWidget.getLabel().split("\\[|\\]");
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(splitString[0]);
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		TextView setPointValueTextView = (TextView)widgetView.findViewById(R.id.setpointvaluelabel);
     		if (setPointValueTextView != null) 
     			if (splitString.length > 1) {
@@ -632,8 +677,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		break;
     	default:
     		labelTextView = (TextView)widgetView.findViewById(R.id.itemlabel);
-    		if (labelTextView != null)
+    		if (labelTextView != null) {
     			labelTextView.setText(openHABWidget.getLabel());
+        		if(labelColor != null)
+        			labelTextView.setTextColor(labelColor);
+    		}
     		break;
     	}
     	LinearLayout dividerLayout = (LinearLayout)widgetView.findViewById(R.id.listdivider);

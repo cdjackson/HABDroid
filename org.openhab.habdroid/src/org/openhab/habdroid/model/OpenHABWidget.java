@@ -33,10 +33,13 @@ import java.util.ArrayList;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.graphics.Color;
+
 /**
  * This is a class to hold basic information about openHAB widget.
  * 
  * @author Victor Belov
+ * @author Chris Jackson
  *
  */
 
@@ -58,6 +61,9 @@ public class OpenHABWidget {
 	private ArrayList<OpenHABWidget> children;
 	private ArrayList<OpenHABWidgetMapping> mappings;
     private boolean mChildrenHasLinkedPages = false;
+	private Integer iconcolor;
+	private Integer labelcolor;
+	private Integer valuecolor;
 	
 	public OpenHABWidget() {
 		this.children = new ArrayList<OpenHABWidget>();
@@ -113,6 +119,12 @@ public class OpenHABWidget {
 						}
 						OpenHABWidgetMapping mapping = new OpenHABWidgetMapping(mappingCommand, mappingLabel);
 						mappings.add(mapping);
+					} else if (childNode.getNodeName().equals("iconcolor")) {
+						setIconColor(childNode.getTextContent());
+					} else if (childNode.getNodeName().equals("labelcolor")) {
+						setLabelColor(childNode.getTextContent());
+					} else if (childNode.getNodeName().equals("valuecolor")) {
+						setValueColor(childNode.getTextContent());
 					}
 				}
 			}
@@ -294,6 +306,42 @@ public class OpenHABWidget {
             }
         }
         return false;
+    }
+
+    public Integer getLabelColor() {
+    	return labelcolor;
+    }
+
+    public void setLabelColor(String color) {
+    	try {
+    		this.labelcolor = new Integer(Color.parseColor(color));
+    	} catch(IllegalArgumentException e) {
+    		this.labelcolor = null;
+    	}
+    }
+
+    public Integer getValueColor() {
+    	return valuecolor;
+    }
+
+    public void setValueColor(String color) {
+    	try {
+    		this.valuecolor = new Integer(Color.parseColor(color));
+    	} catch(IllegalArgumentException e) {
+    		this.valuecolor = null;
+    	}
+    }
+
+    public Integer getIconColor() {
+    	return iconcolor;
+    }
+
+    public void setIconColor(String color) {
+    	try {
+    		this.iconcolor = new Integer(Color.parseColor(color));
+    	} catch(IllegalArgumentException e) {
+    		this.iconcolor = null;
+    	}
     }
 
 }
