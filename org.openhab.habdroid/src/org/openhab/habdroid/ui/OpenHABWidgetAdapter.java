@@ -516,11 +516,11 @@ public class OpenHABWidgetAdapter extends ArrayAdapter<OpenHABWidget> {
     		String chartUrl = "";
     		if (chartItem != null) {
 	    		if (chartItem.getType().equals("GroupItem")) {
-	    			chartUrl = openHABBaseUrl + "rrdchart.png?groups=" + chartItem.getName() + 
+	    			chartUrl = openHABBaseUrl + "chart.png?groups=" + chartItem.getName() + 
 	    					"&period=" + openHABWidget.getPeriod() + "&random=" +
 	    					String.valueOf(random.nextInt());
 	    		} else {
-                    chartUrl = openHABBaseUrl + "rrdchart.png?items=" + chartItem.getName() +
+                    chartUrl = openHABBaseUrl + "chart.png?items=" + chartItem.getName() +
                             "&period=" + openHABWidget.getPeriod() + "&random=" +
                             String.valueOf(random.nextInt());
                 }
